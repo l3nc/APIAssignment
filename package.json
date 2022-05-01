@@ -1,0 +1,25 @@
+{
+  "name": "webapiassignment",
+  "version": "1.0.0",
+  "description": "For WebAPI Assignment",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.18.1",
+    "mongodb": "^4.5.0",
+    "sequelize": "^6.19.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/l3nc/APIAssignment.git"
+  },
+  "author": "CHUNG KWOK FAI, NELSON",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/l3nc/APIAssignment/issues"
+  },
+  "homepage": "https://github.com/l3nc/APIAssignment#readme"
+}
