@@ -1,52 +1,15 @@
 //Charity Worker Routes
-'use strict'
-const fs = require('fs');
+'use strict';
 const express = require('express');
+const cwController = require('./../controllers/cwController');
 const router = express.Router();
 
-const getAllDogs = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    message: 'Done',
-  });
-};
+router.route('/').get(cwController.getAllDogs).post(cwController.createDogs);
 
-const getDogs = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    message: 'Done',
-  });
-};
-const createDogs = (req, res) => {
-  res.status(201).json({
-    status: 'success',
-    message: 'Done',
-  });
-};
-const updateDogs = (req, res) => {
-   res.status(200).json({
-    status: 'success',
-    message: 'Done',
-  });
-};
-const deleteDogs = (req, res) => {
-  res.status(204).json({
-    status: 'success',
-    message: 'Done',
-  });
-};
-
-const cwRouter = express.Router();
-
-cwRouter
-  .route('/')
-  .get(getAllDogs)
-  .post(createDogs);
-
-cwRouter
+router
   .route('/:id')
-  .get(getDogs)
-  .patch(updateDogs)
-  .delete(deleteDogs);
+  .get(cwController.getDogs)
+  .patch(cwController.updateDogs)
+  .delete(cwController.deleteDogs);
 
 module.exports = router;
