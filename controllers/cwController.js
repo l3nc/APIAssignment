@@ -19,7 +19,7 @@ exports.getDogs = (req, res) => {
   });
 };
 exports.createDogs = (req, res) => {
-  const newId = dogs[dogs.length - 1].id * 1;
+  const newId = dogs[dogs.length - 1].id + 1;
   const newDog = Object.assign({ id: newId }, req.body);
   dogs.push(newDog);
   fs.writeFile(`${__dirname}/../test.json`, JSON.stringify(dogs), (err) => {
