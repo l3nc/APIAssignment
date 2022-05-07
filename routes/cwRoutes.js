@@ -4,6 +4,8 @@ const express = require('express');
 const cwController = require('./../controllers/cwController');
 const router = express.Router();
 
+router.param('id', cwController);
+
 router.route('/').get(cwController.getAllDogs).post(cwController.createDogs);
 
 router

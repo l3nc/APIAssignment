@@ -5,6 +5,16 @@ const fs = require('fs');
 
 const dogs = JSON.parse(fs.readFileSync(`${__dirname}/../test.json`));
 
+exports.checkID = (req, res, next, val) => {
+  if (req.params.id * 1 > dogs.length) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+  next();
+};
+
 exports.getAllDogs = (req, res) => {
   res.status(200).json({
     status: 'success',
