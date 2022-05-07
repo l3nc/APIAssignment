@@ -6,7 +6,7 @@ exports.getAllCws = async (req, res) => {
   try {
     const cws = await Cw.find();
     res.status(200).json({
-      status: 'sucess',
+      status: 'success',
       results: cws.length,
       data: {
         cws,
@@ -24,7 +24,7 @@ exports.getCw = async (req, res) => {
   try {
     const cw = await Cw.findById(req.params.id);
     res.status(200).json({
-      status: 'sucess',
+      status: 'success',
       data: {
         cw,
       },

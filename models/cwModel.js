@@ -9,8 +9,7 @@ const cwSchema = new mongoose.Schema({
   },
   joinDate: {
     type: Date,
-    default: Date.now,
-    required: true,
+    default: Date.now(),
   },
   proPic: {
     type: String,
@@ -24,9 +23,10 @@ const cwSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'Must have a password'],
+    trim: true,
   },
 });
 
 // Export the schema
-const Cw = mongoose.model('Charity workers ', cwSchema);
+const Cw = mongoose.model('Cw', cwSchema);
 module.exports = Cw;
