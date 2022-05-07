@@ -1,12 +1,11 @@
 const mongoose = require('mongoose');
 
-//Schema
+// Schema config
 const cwSchema = new mongoose.Schema({
   name: {
     type: String,
-    unique: true,
     trim: true,
-    required: true,
+    required: [true, 'Must have a name'],
   },
   joinDate: {
     type: Date,
@@ -16,13 +15,18 @@ const cwSchema = new mongoose.Schema({
   proPic: {
     type: String,
   },
-  proEmail: {
+  email: {
     type: String,
     required: [true, 'Use to Login'],
+    trim: true,
+    unique: true,
   },
-  loginID: {
+  password: {
     type: String,
-    required: true,
-    default: cwSchema.proEmail,
+    required: [true, 'Must have a password'],
   },
 });
+
+// Export the schema
+const Cw = mongoose.model('Charity workers ', cwSchema);
+module.exports = Cw;

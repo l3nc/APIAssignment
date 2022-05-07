@@ -1,50 +1,90 @@
-'use strict';
-
 // The controller of Charity worker
-const fs = require('fs');
+const res = require('express/lib/response');
+const Cw = require('../models/cwModel');
 
-const dogs = JSON.parse(fs.readFileSync(`${__dirname}/../test.json`));
-
-exports.checkID = (req, res, next, val) => {
-  if (req.params.id * 1 > dogs.length) {
-    return res.status(404).json({
+exports.getAllCws = async (req, res) => {
+  try {
+    const cws = await Cw.find();
+    res.status(200).json({
+      status: 'sucess',
+      results: cws.length,
+      data: {
+        cws,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
       status: 'fail',
-      message: 'Invalid ID',
+      message: err,
     });
   }
-  next();
 };
 
-exports.getAllDogs = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    message: 'Done',
-  });
+exports.getCw = async (req, res) => {
+  try {
+    const cw = await Cw.findById(req.params.id);
+    res.status(200).json({
+      status: 'sucess',
+      data: {
+        cw,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
 
-exports.getDogs = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    message: 'Done',
-  });
+exports.createCw = async (req, res) => {
+  try {
+    const newCw = await Cw.create(req.body);
+    res.status(201).json({
+      status: 'success',
+      data: {
+        cw: newCw,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
-exports.createDogs = (req, res) => {
-  const newId = dogs[dogs.length - 1].id + 1;
-  const newDog = Object.assign({ id: newId }, req.body);
-  dogs.push(newDog);
-  fs.writeFile(`${__dirname}/../test.json`, JSON.stringify(dogs), (err) => {
-    res.status(201).json({ status: 'Success', data: { dog: newDog } });
-  });
+
+exports.updateCw = async (req, res) => {
+  try {
+    const cw = await Cw.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    res.status(200).json({
+      status: 'success',
+      data: {
+        cw,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
-exports.updateDogs = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    message: 'Done',
-  });
-};
-exports.deleteDogs = (req, res) => {
-  res.status(204).json({
-    status: 'success',
-    message: 'Done',
-  });
+
+exports.deleteCw = async (req, res) => {
+  try {
+    await Cw.findbyIDAndDelete(req.params.id, req.body);
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };

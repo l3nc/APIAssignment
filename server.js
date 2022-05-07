@@ -1,4 +1,3 @@
-'use strict';
 // Load dependencies
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
