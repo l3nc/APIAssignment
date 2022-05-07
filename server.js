@@ -1,5 +1,5 @@
 // Load dependencies
-const { MongoClient, ServerApiVersion } = require('mongodb');
+//const { MongoClient, ServerApiVersion } = require('mongodb');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 // Connect to mongoDB server

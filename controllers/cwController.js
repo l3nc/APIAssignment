@@ -76,7 +76,7 @@ exports.updateCw = async (req, res) => {
 
 exports.deleteCw = async (req, res) => {
   try {
-    await Cw.findbyIDAndDelete(req.params.id, req.body);
+    await Cw.findByIdAndDelete(req.params.id, req.body);
     res.status(204).json({
       status: 'success',
       data: null,
