@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 // Schema config
 const cwSchema = new mongoose.Schema({
@@ -6,6 +7,12 @@ const cwSchema = new mongoose.Schema({
     type: String,
     trim: true,
     required: [true, 'Must have a name'],
+    maxlength: [50, 'Name cannot be longer than 50 characters'],
+    minlength: [1, 'Name at least need to more than 1 characters'],
+    validate: {
+      validator: 'matches',
+      arguments: ['^[a-zA-Z-]'],
+    },
   },
   joinDate: {
     type: Date,
