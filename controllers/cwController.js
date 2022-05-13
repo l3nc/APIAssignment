@@ -1,10 +1,12 @@
 // The controller of Charity worker
-const res = require('express/lib/response');
 const Cw = require('../models/cwModel');
+const APIFeatures = require('../utils/apiFeatures');
 
 exports.getAllCws = async (req, res) => {
   try {
-    const cws = await Cw.find();
+    const features = new APIFeatures(Cw.find(), req.query).$sort();
+    const cws = await features.query;
+
     res.status(200).json({
       status: 'success',
       results: cws.length,
@@ -80,6 +82,21 @@ exports.deleteCw = async (req, res) => {
     res.status(204).json({
       status: 'success',
       data: null,
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
+};
+
+exports.getCwStats = async (req, res) => {
+  try {
+    const stats = await Cw.aggregate([{ $sort: { name: 1 } }]);
+    res.status(200).json({
+      status: 'success',
+      data: { stats },
     });
   } catch (err) {
     res.status(404).json({

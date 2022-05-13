@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.route('/').get(cwController.getAllCws).post(cwController.createCw);
 
+router.route('/cw-stats').get(cwController.getCwStats);
+
 router
   .route('/:id')
   .get(cwController.getCw)
