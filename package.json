@@ -10,7 +10,7 @@
     "mongoose": "^5.13.14",
     "morgan": "^1.10.0",
     "react": "^18.1.0",
-    "reactdom": "^2.0.0",
+    "react-dom": "^18.1.0",
     "sequelize": "^6.19.0",
     "slugify": "^1.6.5",
     "superagent": "^7.1.3",
