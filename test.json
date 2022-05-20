@@ -1,7 +1,0 @@
-[
-  {},
-  { "id": null, "name": "Test Dog", "Breed": "Test Breed", "Age": "3" },
-  { "id": 0, "name": "Test Dog 2", "Breed": "Test Breed", "Age": "3" },
-  { "id": 0, "name": "Test Dog 3", "Breed": "Test Breed", "Age": "3" },
-  { "id": 1, "name": "Test Dog 4", "Breed": "Test Breed", "Age": "3" }
-]

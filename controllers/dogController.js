@@ -1,22 +1,21 @@
-// The controller of Charity worker
-const Cw = require('../models/cwModel');
+// The controller of DOG
+const Dog = require('../models/dogModel');
 const APIFeatures = require('../utils/apiFeatures');
 
-exports.getAllCws = async (req, res) => {
+exports.getAllDogs = async (req, res) => {
   try {
-    const features = new APIFeatures(Cw.find(), req.query)
+    const features = new APIFeatures(Dog.find(), req.query)
       .filter()
       .sort()
       .limitFields()
       .paginate();
-
-    const cws = await features.query;
+    const dog = await features.query;
 
     res.status(200).json({
       status: 'success',
-      results: cws.length,
+      results: dog.length,
       data: {
-        cws,
+        dog,
       },
     });
   } catch (err) {
@@ -27,13 +26,13 @@ exports.getAllCws = async (req, res) => {
   }
 };
 
-exports.getCw = async (req, res) => {
+exports.getDog = async (req, res) => {
   try {
-    const cw = await Cw.findById(req.params.id);
+    const dog = await Dog.findById(req.params.id);
     res.status(200).json({
       status: 'success',
       data: {
-        cw,
+        dog,
       },
     });
   } catch (err) {
@@ -44,13 +43,14 @@ exports.getCw = async (req, res) => {
   }
 };
 
-exports.createCw = async (req, res) => {
+exports.createDog = async (req, res) => {
   try {
-    const newCw = await Cw.create(req.body);
+    const newDog = await Dog.create(req.body);
+
     res.status(201).json({
       status: 'success',
       data: {
-        cw: newCw,
+        dog: newDog,
       },
     });
   } catch (err) {
@@ -61,16 +61,16 @@ exports.createCw = async (req, res) => {
   }
 };
 
-exports.updateCw = async (req, res) => {
+exports.updateDog = async (req, res) => {
   try {
-    const cw = await Cw.findByIdAndUpdate(req.params.id, req.body, {
+    const dog = await Dog.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
     });
     res.status(200).json({
       status: 'success',
       data: {
-        cw,
+        dog,
       },
     });
   } catch (err) {
@@ -81,9 +81,9 @@ exports.updateCw = async (req, res) => {
   }
 };
 
-exports.deleteCw = async (req, res) => {
+exports.deleteDog = async (req, res) => {
   try {
-    await Cw.findByIdAndDelete(req.params.id, req.body);
+    await Dog.findByIdAndDelete(req.params.id, req.body);
     res.status(204).json({
       status: 'success',
       data: null,
@@ -96,9 +96,9 @@ exports.deleteCw = async (req, res) => {
   }
 };
 
-exports.getCwStats = async (req, res) => {
+exports.getDogStats = async (req, res) => {
   try {
-    const stats = await Cw.aggregate([{ $sort: { name: 1 } }]);
+    const stats = await Dog.aggregate([{ $sort: { name: 1 } }]);
     res.status(200).json({
       status: 'success',
       data: { stats },

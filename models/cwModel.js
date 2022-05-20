@@ -4,7 +4,6 @@ const validator = require('validator');
 
 // Schema config
 const cwSchema = new mongoose.Schema({
-  slug: String,
   name: {
     type: String,
     trim: true,
@@ -12,6 +11,7 @@ const cwSchema = new mongoose.Schema({
     maxlength: [50, 'Name cannot be longer than 50 characters'],
     minlength: [1, 'Name at least need to more than 1 characters'],
   },
+  slug: String,
   joinDate: {
     type: Date,
     default: Date.now(),
@@ -24,13 +24,19 @@ const cwSchema = new mongoose.Schema({
     required: [true, 'Use to Login'],
     trim: true,
     unique: [true, 'cannot register duplicate email address'],
+    lowercase: true,
+    // validate: [validator.isEmail, 'Please provide a valid email'],
   },
   password: {
     type: String,
     required: [true, 'Must have a password'],
     trim: true,
     maxlength: [50, 'Password cannot be longer than 50 characters'],
-    minlength: [1, 'Password at least need to more than 1 characters'],
+    minlength: [8, 'Password at least need to more than 8 characters'],
+  },
+  passwordConfirm: {
+    type: String,
+    required: [true, 'comfirm password is needed'],
   },
 });
 
