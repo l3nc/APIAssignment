@@ -25,7 +25,7 @@ const cwSchema = new mongoose.Schema({
     trim: true,
     unique: [true, 'cannot register duplicate email address'],
     lowercase: true,
-    // validate: [validator.isEmail, 'Please provide a valid email'],
+    validate: [validator.isEmail, 'Please provide a valid email'],
   },
   password: {
     type: String,
