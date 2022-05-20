@@ -2,6 +2,7 @@
 const Cw = require('../models/cwModel');
 const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
+const AppError = require('./../utils/appError');
 
 exports.getAllCws = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(Cw.find(), req.query)
@@ -22,6 +23,9 @@ exports.getAllCws = catchAsync(async (req, res, next) => {
 
 exports.getCw = catchAsync(async (req, res, next) => {
   const cw = await Cw.findById(req.params.id);
+  if (!cw) {
+    return next(new AppError('No User ID found', 404));
+  }
   res.status(200).json({
     status: 'success',
     data: {
@@ -45,6 +49,9 @@ exports.updateCw = catchAsync(async (req, res, next) => {
     new: true,
     runValidators: true,
   });
+  if (!cw) {
+    return next(new AppError('No User ID found', 404));
+  }
   res.status(200).json({
     status: 'success',
     data: {
@@ -54,7 +61,10 @@ exports.updateCw = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteCw = catchAsync(async (req, res, next) => {
-  await Cw.findByIdAndDelete(req.params.id, req.body);
+  const cw = await Cw.findByIdAndDelete(req.params.id, req.body);
+  if (!cw) {
+    return next(new AppError('No User ID found', 404));
+  }
   res.status(204).json({
     status: 'success',
     data: null,

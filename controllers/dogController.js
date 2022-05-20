@@ -2,6 +2,7 @@
 const Dog = require('../models/dogModel');
 const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
+const AppError = require('./../utils/appError');
 
 exports.getAllDogs = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(Dog.find(), req.query)
@@ -10,18 +11,21 @@ exports.getAllDogs = catchAsync(async (req, res, next) => {
     .limitFields()
     .paginate();
 
-  const dog = await features.query;
+  const dogs = await features.query;
   res.status(200).json({
     status: 'success',
-    results: dog.length,
+    results: dogs.length,
     data: {
-      dog,
+      dogs,
     },
   });
 });
 
 exports.getDog = catchAsync(async (req, res, next) => {
   const dog = await Dog.findById(req.params.id);
+  if (!dog) {
+    return next(new AppError('No Dog ID found', 404));
+  }
   res.status(200).json({
     status: 'success',
     data: {
@@ -45,6 +49,9 @@ exports.updateDog = catchAsync(async (req, res, next) => {
     new: true,
     runValidators: true,
   });
+  if (!dog) {
+    return next(new AppError('No Dog ID found', 404));
+  }
   res.status(200).json({
     status: 'success',
     data: {
@@ -54,7 +61,10 @@ exports.updateDog = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteDog = catchAsync(async (req, res, next) => {
-  await Dog.findByIdAndDelete(req.params.id, req.body);
+  const dog = await Dog.findByIdAndDelete(req.params.id, req.body);
+  if (!dog) {
+    return next(new AppError('No Dog ID found', 404));
+  }
   res.status(204).json({
     status: 'success',
     data: null,
