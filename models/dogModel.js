@@ -37,5 +37,4 @@ dogSchema.pre('save', function (next) {
 
 // Export the schema
 const Dog = mongoose.model('Dog', dogSchema);
-console.log(dogSchema);
 module.exports = Dog;
