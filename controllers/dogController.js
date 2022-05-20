@@ -1,6 +1,7 @@
 // The controller of DOG
 const Dog = require('../models/dogModel');
 const APIFeatures = require('../utils/apiFeatures');
+const catchAsync = require('./../utils/catchAsync');
 
 exports.getAllDogs = async (req, res) => {
   try {
