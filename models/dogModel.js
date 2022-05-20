@@ -31,7 +31,6 @@ const dogSchema = new mongoose.Schema({
 //Docuemnt Middlewares: runs before .save() and .create()
 
 dogSchema.pre('save', function (next) {
-  console.log(this);
   this.slug = slugify(this.dogName, { lower: true });
   next();
 });
