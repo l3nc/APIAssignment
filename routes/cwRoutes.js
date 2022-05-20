@@ -1,9 +1,11 @@
 //Charity Worker Routes
 const express = require('express');
-
 const cwController = require('../controllers/cwController');
+const authController = require('../controllers/authController');
 
 const router = express.Router();
+
+router.post('/signup', authController.signup);
 
 router.route('/').get(cwController.getAllCws).post(cwController.createCw);
 

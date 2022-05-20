@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
 // Schema config
 const cwSchema = new mongoose.Schema({
@@ -37,11 +38,26 @@ const cwSchema = new mongoose.Schema({
   passwordConfirm: {
     type: String,
     required: [true, 'comfirm password is needed'],
+    validate: {
+      // Only work on create new OBJ or Save.
+      validator: function (el) {
+        return el === this.password;
+      },
+      message: 'Password is not the SAME!!!',
+    },
   },
 });
 
 cwSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+// only run if the password had modified
+cwSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 12);
+  this.passwordConfirm = undefined;
   next();
 });
 

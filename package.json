@@ -4,6 +4,7 @@
   "description": "API Assignment - RESTful API Full Stack Software Portfolio",
   "main": "app.js",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "dotenv": "^16.0.0",
     "express": "^4.18.1",
     "mongodb": "^4.5.0",
