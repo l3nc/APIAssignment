@@ -34,6 +34,7 @@ const cwSchema = new mongoose.Schema({
     trim: true,
     maxlength: [50, 'Password cannot be longer than 50 characters'],
     minlength: [8, 'Password at least need to more than 8 characters'],
+    select: false,
   },
   passwordConfirm: {
     type: String,
@@ -60,6 +61,13 @@ cwSchema.pre('save', async function (next) {
   this.passwordConfirm = undefined;
   next();
 });
+
+cwSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassowrd
+) {
+  return await bcrypt.compare(candidatePassword, userPassowrd);
+};
 
 // Export the schema
 const Cw = mongoose.model('Cw', cwSchema);
