@@ -4,6 +4,19 @@ const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
+exports.adoptDog = catchAsync(async (req, res, next) => {
+  const adoptDogs = await Dog.create(req.body);
+  if (!adoptDogs.isAdopt) {
+    return next(new AppError('Dog had adopted by other people!', 404));
+  }
+  res.status(200).json({
+    status: 'success',
+    data: {
+      adoptDogs,
+    },
+  });
+});
+
 exports.getAllDogs = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(Dog.find(), req.query)
     .filter()

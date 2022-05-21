@@ -8,12 +8,30 @@ const router = express.Router();
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 
-router.route('/').get(cwController.getAllCws).post(cwController.createCw);
+router
+  .route('/')
+  .get(cwController.getAllCws)
+  .post(
+    authController.protect,
+    authController.restrictTo('admin'),
+    cwController.createCw
+  );
 router.route('/cw-stats').get(cwController.getCwStats);
 router
   .route('/:id')
   .get(cwController.getCw)
-  .patch(cwController.updateCw)
-  .delete(cwController.deleteCw);
+  .patch(
+    authController.protect,
+    authController.restrictTo('admin'),
+    cwController.updateCw
+  )
+  .delete(
+    authController.protect,
+    authController.restrictTo('admin'),
+    cwController.deleteCw
+  );
 
 module.exports = router;
+
+//authController.protect,
+//authController.restrictTo('admin'),

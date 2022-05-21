@@ -28,6 +28,7 @@ const cwSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, 'Please provide a valid email'],
   },
+  role: { type: String, enum: ['admin', 'member'], default: 'member' },
   password: {
     type: String,
     required: [true, 'Must have a password'],

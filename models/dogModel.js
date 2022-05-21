@@ -26,6 +26,10 @@ const dogSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  isAdopt: {
+    type: Boolean,
+    date: Date.now(),
+  },
 });
 
 //Docuemnt Middlewares: runs before .save() and .create()
