@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 
 // Schema config
 const cwSchema = new mongoose.Schema({
+  slug: String,
   name: {
     type: String,
     trim: true,
@@ -12,7 +13,6 @@ const cwSchema = new mongoose.Schema({
     maxlength: [50, 'Name cannot be longer than 50 characters'],
     minlength: [1, 'Name at least need to more than 1 characters'],
   },
-  slug: String,
   joinDate: {
     type: Date,
     default: Date.now(),
@@ -28,7 +28,6 @@ const cwSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, 'Please provide a valid email'],
   },
-  role: { type: String, enum: ['admin', 'member'], default: 'member' },
   password: {
     type: String,
     required: [true, 'Must have a password'],
@@ -48,6 +47,7 @@ const cwSchema = new mongoose.Schema({
       message: 'Password is not the SAME!!!',
     },
   },
+  role: { type: String, enum: ['admin', 'member'] },
   passwordChangedAt: Date,
 });
 

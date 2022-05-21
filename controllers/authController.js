@@ -10,13 +10,14 @@ const signToken = (id) => {
   });
 };
 
+// {
+//    email: req.body.email,
+//    password: req.body.password,
+//    passwordConfirm: req.body.passwordConfirm,
+// }
+
 exports.signup = catchAsync(async (req, res, next) => {
-  const newCw = await Cw.create({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
-  });
+  const newCw = await Cw.create(req.body);
 
   const token = signToken(newCw._id);
 
@@ -58,7 +59,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     token = req.headers.authorization.split(' ')[1];
   }
 
-  if (!token) {
+  if (token) {
     return next(
       new AppError('You are not logged in, Please log in to get access!', 401)
     );
@@ -95,7 +96,7 @@ exports.restrictTo = (...role) => {
   return (req, res, next) => {
     //role : admin
     if (!role.includes(req.cw.role)) {
-      return next(new AppError('No permission!'), 403);
+      return next(new AppError('No permission!', 403));
     }
     next();
   };

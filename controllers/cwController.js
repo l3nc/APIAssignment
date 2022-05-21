@@ -36,6 +36,7 @@ exports.getCw = catchAsync(async (req, res, next) => {
 
 exports.createCw = catchAsync(async (req, res, next) => {
   const newCw = await Cw.create(req.body);
+
   res.status(201).json({
     status: 'success',
     data: {
