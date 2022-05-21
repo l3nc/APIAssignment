@@ -47,6 +47,7 @@ const cwSchema = new mongoose.Schema({
       message: 'Password is not the SAME!!!',
     },
   },
+  passwordChangedAt: Date,
 });
 
 cwSchema.pre('save', function (next) {
@@ -57,16 +58,44 @@ cwSchema.pre('save', function (next) {
 // only run if the password had modified
 cwSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
+  // hash 12
   this.password = await bcrypt.hash(this.password, 12);
+  //delete password confirm field
   this.passwordConfirm = undefined;
+  next();
+});
+
+cwSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+cwSchema.pre(/^find/, function (next) {
+  // this points to the current query
+  this.find({ active: { $ne: false } });
   next();
 });
 
 cwSchema.methods.correctPassword = async function (
   candidatePassword,
-  userPassowrd
+  cwPassword
 ) {
-  return await bcrypt.compare(candidatePassword, userPassowrd);
+  return await bcrypt.compare(candidatePassword, cwPassword);
+};
+cwSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+
+    return JWTTimestamp < changedTimestamp;
+  }
+
+  // False means NOT changed
+  return false;
 };
 
 // Export the schema
