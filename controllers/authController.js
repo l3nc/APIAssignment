@@ -6,6 +6,7 @@ const { promisify } = require('util');
 const req = require('express/lib/request');
 const { appendFile } = require('fs');
 const { cwd } = require('process');
+const sendEmail = require('./../utils/email');
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -113,12 +114,12 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   }
   // generate the random reset token
   const resetToken = cw.createPasswordResetToken();
-  await cw.save({ validateBeforeSave: fakse });
+  await cw.save({ validateBeforeSave: false });
 
   // send to user email
   const resetURL = `${req.protocol}://${req.get(
     'host'
-  )}/api/v1/cw/resetPassword/${resetToken}`;
+  )}/api/v1/cws/resetPassword/${resetToken}`;
   const message = `Forgot your password?  your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
 
   try {
@@ -133,9 +134,9 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
       message: 'Email Sent!',
     });
   } catch (err) {
-    user.passwordResetToken = undefined;
-    user.passwordResetExpires = undefined;
-    await user.save({ validateBeforeSave: false });
+    cw.passwordResetToken = undefined;
+    cw.passwordResetExpires = undefined;
+    await cw.save({ validateBeforeSave: false });
 
     return next(new AppError('Error!! Try again later!'), 500);
   }
