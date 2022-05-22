@@ -4,6 +4,7 @@ const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
+//Get all charity worker
 exports.getAllCws = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(Cw.find(), req.query)
     .filter()
@@ -21,6 +22,8 @@ exports.getAllCws = catchAsync(async (req, res, next) => {
   });
 });
 
+//Get single charity worker
+
 exports.getCw = catchAsync(async (req, res, next) => {
   const cw = await Cw.findById(req.params.id);
   if (!cw) {
@@ -34,6 +37,8 @@ exports.getCw = catchAsync(async (req, res, next) => {
   });
 });
 
+//Create charity worker
+
 exports.createCw = catchAsync(async (req, res, next) => {
   const newCw = await Cw.create(req.body);
 
@@ -44,6 +49,8 @@ exports.createCw = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+//Update charity worker
 
 exports.updateCw = catchAsync(async (req, res, next) => {
   const cw = await Cw.findByIdAndUpdate(req.params.id, req.body, {
@@ -61,6 +68,7 @@ exports.updateCw = catchAsync(async (req, res, next) => {
   });
 });
 
+// Delete charity worker
 exports.deleteCw = catchAsync(async (req, res, next) => {
   const cw = await Cw.findByIdAndDelete(req.params.id, req.body);
   if (!cw) {
@@ -72,6 +80,7 @@ exports.deleteCw = catchAsync(async (req, res, next) => {
   });
 });
 
+// Get charity worker by sorting the name
 exports.getCwStats = catchAsync(async (req, res, next) => {
   const stats = await Cw.aggregate([{ $sort: { name: 1 } }]);
   res.status(200).json({

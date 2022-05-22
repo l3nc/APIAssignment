@@ -4,6 +4,7 @@ const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
+// Adopt dogs functon
 exports.adoptDog = catchAsync(async (req, res, next) => {
   const adoptDogs = await Dog.create(req.body);
   if (!adoptDogs.isAdopt) {
@@ -17,6 +18,7 @@ exports.adoptDog = catchAsync(async (req, res, next) => {
   });
 });
 
+// Get all dogs
 exports.getAllDogs = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(Dog.find(), req.query)
     .filter()
@@ -34,6 +36,7 @@ exports.getAllDogs = catchAsync(async (req, res, next) => {
   });
 });
 
+// Get single dog
 exports.getDog = catchAsync(async (req, res, next) => {
   const dog = await Dog.findById(req.params.id);
   if (!dog) {
@@ -47,6 +50,7 @@ exports.getDog = catchAsync(async (req, res, next) => {
   });
 });
 
+//Create dogs
 exports.createDog = catchAsync(async (req, res, next) => {
   const newDog = await Dog.create(req.body);
   res.status(201).json({
@@ -57,6 +61,7 @@ exports.createDog = catchAsync(async (req, res, next) => {
   });
 });
 
+//Update dogs
 exports.updateDog = catchAsync(async (req, res, next) => {
   const dog = await Dog.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -73,6 +78,7 @@ exports.updateDog = catchAsync(async (req, res, next) => {
   });
 });
 
+//Delete dog
 exports.deleteDog = catchAsync(async (req, res, next) => {
   const dog = await Dog.findByIdAndDelete(req.params.id, req.body);
   if (!dog) {
@@ -84,6 +90,7 @@ exports.deleteDog = catchAsync(async (req, res, next) => {
   });
 });
 
+//Get all dogs by sorting the name
 exports.getDogStats = catchAsync(async (req, res, next) => {
   const stats = await Dog.aggregate([{ $sort: { name: 1 } }]);
   res.status(200).json({

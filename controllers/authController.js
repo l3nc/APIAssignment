@@ -9,6 +9,7 @@ const { cwd } = require('process');
 const sendEmail = require('./../utils/email');
 const crypto = require('crypto');
 
+// Creating JWT Token
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
@@ -21,20 +22,24 @@ const signToken = (id) => {
 //    passwordConfirm: req.body.passwordConfirm,
 // }
 
-exports.signup = catchAsync(async (req, res, next) => {
-  const newCw = await Cw.create(req.body);
+const createSendToken = (cw, statusCode, res) => {
+  const token = signToken(cw._id);
 
-  const token = signToken(newCw._id);
-
-  res.status(201).json({
+  res.status(statusCode).json({
     status: 'success',
     token,
     data: {
-      cw: newCw,
+      cw: cw,
     },
   });
+};
+// SIGNUP function
+exports.signup = catchAsync(async (req, res, next) => {
+  const newCw = await Cw.create(req.body);
+  createSendToken(newCw, 201, res);
 });
 
+//LOGIN function
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
   // check email and password exist
@@ -49,11 +54,10 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('Incorrect email or password'), 401);
   }
   // if everything ok, send token to client
-  const token = signToken(cw._id);
-
-  res.status(200).json({ status: 'success', token });
+  createSendToken(cw, 200, res);
 });
 
+// Protecting the route for unauthorize access
 exports.protect = catchAsync(async (req, res, next) => {
   // Getting token and check exist
   let token;
@@ -83,6 +87,7 @@ exports.protect = catchAsync(async (req, res, next) => {
       )
     );
   }
+
   //Check user changed password after token was issue.
   if (checkCw.changedPasswordAfter(decoded.iat)) {
     return next(
@@ -97,6 +102,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+// Applied access right / restrict to admin
 exports.restrictTo = (...role) => {
   return (req, res, next) => {
     //role : admin
@@ -107,6 +113,7 @@ exports.restrictTo = (...role) => {
   };
 };
 
+//Forgot password function
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   //get user base on posted email
   const cw = await Cw.findOne({ email: req.body.email });
@@ -143,6 +150,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   }
 });
 
+//Reset Password function
 exports.resetPassword = catchAsync(async (req, res, next) => {
   //  Get user based on the token
   const hashedToken = crypto
@@ -167,9 +175,21 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   // 3) Update changedPasswordAt property for the user
   // 4) Log the user in, send JWT
-  const token = signToken(cw._id);
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  createSendToken(cw, 201, res);
+});
+
+// Member reset password instead of forgot password
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  // Get user
+  const cw = await Cw.findById(req.cw.id).select('+password');
+  // check if POSTed current password is correct
+  if (!(await cw.correctPassword(req.body.passwordCurrent, cw.password))) {
+    return next(new AppError('Your current password is incorrect!!'));
+  }
+  //update password
+  cw.password = req.body.password;
+  cw.passwordConfirm = req.body.passwordConfirm;
+  await cw.save();
+  //log user
+  createSendToken(cw, 200, res);
 });
