@@ -4,6 +4,7 @@ const validator = require('validator');
 
 // Schema config
 const dogSchema = new mongoose.Schema({
+  slug: String,
   dogName: {
     type: String,
     trim: true,
@@ -12,7 +13,6 @@ const dogSchema = new mongoose.Schema({
     maxlength: [50, 'Name cannot be longer than 50 characters'],
     minlength: [1, 'Name at least need to more than 1 characters'],
   },
-  slug: String,
   dogPic: {
     type: String,
   },
@@ -26,10 +26,10 @@ const dogSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
-  isAdopt: {
+  isAvailable: {
     type: Boolean,
-    date: Date.now(),
   },
+  comment: String,
 });
 
 //Docuemnt Middlewares: runs before .save() and .create()
