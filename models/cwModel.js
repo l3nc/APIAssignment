@@ -18,9 +18,6 @@ const cwSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
-  proPic: {
-    type: String,
-  },
   email: {
     type: String,
     required: [true, 'Use to Login'],
