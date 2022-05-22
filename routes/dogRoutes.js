@@ -4,40 +4,19 @@ const authController = require('../controllers/authController');
 const dogController = require('../controllers/dogController');
 
 const router = express.Router();
+router.route('/').get(dogController.getAllDogs);
 
-router.route(
-  '/:adpotion',
-  authController.protect,
-  authController.restrictTo('member'),
-  dogController.adoptDog
-);
+router.use(authController.protect);
+router.use(authController.restrictTo('admin'));
 
-router
-  .route('/')
-  .get(dogController.getAllDogs)
-  .post(
-    authController.protect,
-    authController.restrictTo('admin'),
-    dogController.createDog
-  );
-
+router.route('/:adpotion').post(dogController.adoptDog);
+router.route('/').post(dogController.createDog);
 router.route('/dog-stats').get(dogController.getDogStats);
 
 router
   .route('/:id')
   .get(dogController.getDog)
-  .patch(
-    authController.protect,
-    authController.restrictTo('admin'),
-    dogController.updateDog
-  )
-  .delete(
-    authController.protect,
-    authController.restrictTo('admin'),
-    dogController.deleteDog
-  );
+  .patch(dogController.updateDog)
+  .delete(dogController.deleteDog);
 
 module.exports = router;
-
-//authController.protect,
-//authController.restrictTo('admin'),

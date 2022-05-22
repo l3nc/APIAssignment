@@ -7,6 +7,7 @@ const req = require('express/lib/request');
 const { appendFile } = require('fs');
 const { cwd } = require('process');
 const sendEmail = require('./../utils/email');
+const crypto = require('crypto');
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -141,4 +142,34 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     return next(new AppError('Error!! Try again later!'), 500);
   }
 });
-exports.resetPassword = (req, res, next) => {};
+
+exports.resetPassword = catchAsync(async (req, res, next) => {
+  //  Get user based on the token
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
+
+  const cw = await Cw.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  //  set  new password if token has not expired user exist
+  if (!cw) {
+    return next(new AppError('Token is invalid or expired!!', 400));
+  }
+  cw.password = req.body.password;
+  cw.passwordConfirm = req.body.passwordConfirm;
+  cw.passwordResetToken = undefined;
+  cw.passwordResetExpires = undefined;
+  await cw.save();
+
+  // 3) Update changedPasswordAt property for the user
+  // 4) Log the user in, send JWT
+  const token = signToken(cw._id);
+  res.status(200).json({
+    status: 'success',
+    token,
+  });
+});

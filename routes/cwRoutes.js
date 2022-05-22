@@ -8,34 +8,20 @@ const router = express.Router();
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 
-router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
+router.post('/forgotPassword', authController.forgotPassword);
 
 // Protect all routes after this middleware
-// router.use(authController.protect);
-// router.use(authController.restrictTo('admin'));
+router.use(authController.protect);
+router.use(authController.restrictTo('admin'));
 
-router
-  .route('/')
-  .get(cwController.getAllCws)
-  .post(
-    authController.protect,
-    authController.restrictTo('admin'),
-    cwController.createCw
-  );
+router.route('/').get(cwController.getAllCws);
 router.route('/cw-stats').get(cwController.getCwStats);
+router.route('/').post(cwController.createCw);
 router
   .route('/:id')
   .get(cwController.getCw)
-  .patch(
-    authController.protect,
-    authController.restrictTo('admin'),
-    cwController.updateCw
-  )
-  .delete(
-    authController.protect,
-    authController.restrictTo('admin'),
-    cwController.deleteCw
-  );
+  .patch(cwController.updateCw)
+  .delete(cwController.deleteCw);
 
 module.exports = router;
