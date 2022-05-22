@@ -6,12 +6,14 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const cwRouter = require('./routes/cwRoutes');
 const dogRouter = require('./routes/dogRoutes');
+const cors = require('cors');
 
 // Middlewares
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+app.use(cors());
 // using express framework to process json
 app.use(express.json());
 

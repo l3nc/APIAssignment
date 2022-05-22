@@ -28,7 +28,7 @@ mongoose
 
 const app = require('./app');
 
-const port = 6000;
+const port = 3001;
 app.listen(port, () => {
   console.log(`Dog App is running on port ${port}🎉🎊🥂🎉🎊🥂🎉🎊🥂`);
 });
