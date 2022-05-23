@@ -3,6 +3,23 @@ const Dog = require('../models/dogModel');
 const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
+// const multer = require('multer');
+
+// // img
+// const multerStorage = multer.memoryStorage();
+
+// const multerFilter = (req, file, cb) => {
+//   if (file.mimetype.startsWith('image')) {
+//     cb(null, true);
+//   } else {
+//     cb(new AppError('Not an image! Please upload only images.', 400), false);
+//   }
+// };
+// const upload = multer({
+//   storage: multerStorage,
+//   fileFilter: multerFilter,
+// });
+// exports.uploadDogPhoto = upload.single('photo');
 
 // Adopt dogs functon
 exports.adoptDog = catchAsync(async (req, res, next) => {

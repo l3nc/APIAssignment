@@ -15,6 +15,7 @@ const dogSchema = new mongoose.Schema({
   },
   dogPic: {
     type: String,
+    default: 'default.jpg',
   },
   breeding: {
     type: String,
