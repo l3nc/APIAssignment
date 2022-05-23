@@ -32,6 +32,11 @@ const cwSchema = new mongoose.Schema({
     trim: true,
     maxlength: [50, 'Password cannot be longer than 50 characters'],
     minlength: [8, 'Password at least need to more than 8 characters'],
+    match: [
+      /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/,
+      'password show contains capital and small letters',
+    ],
+
     select: false,
   },
   passwordConfirm: {
