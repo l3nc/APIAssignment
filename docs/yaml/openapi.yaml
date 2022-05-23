@@ -1,0 +1,282 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Back End Demonstration API
+  description: A simple Dog adoption API.
+  contact:
+    name: Nelson Chung
+    email: 217013148@stu.vtc.edu.hk
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+  - url: '127.0.0.1:3001'
+    description: Development server
+tags:
+  - name: CW
+    description: API endpoints for cw(charity worker).
+  - name: DOGs
+    description: Access and perform CRUD operations on DOGs entries.
+paths:
+  /cw/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: Numeric id of the charity worker
+    get:
+      tags:
+        - cw
+      description: Get cw(charity worker) by id.
+      responses:
+        '200':
+          description: View of cw(charity worker)
+        '404':
+          description: CW was not found in the DB.
+    post:
+      tags:
+        - cw
+      description: Create a new cw(charity worker)
+      requestBody:
+        description: All new cw(charity worker) data.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./CW.json#/definitions/cw
+      responses:
+        '201':
+          description: User created
+
+    put:
+      tags:
+        - cw
+      description: Update cw(charity worker) by ID.
+      responses:
+        '200':
+          description: Update confirmation and link to record.
+        '404':
+          description: cw(charity worker) was not found in the DB.
+    delete:
+      tags:
+        - cw
+      description: Delete cw(charity worker) by ID.
+    responses:
+      '200':
+        description: Delete confirmation.
+      '404':
+        description: cw(charity worker) was not found in the DB.
+ paths:
+  /signup/:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: Signup user
+    post:
+      tags:
+        - cw
+      description: Signup
+      requestBody:
+        description: signup user
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 
+      responses:
+        '201':
+          description: member created success
+        '404':
+        description: member create failed
+paths:
+  /login/:
+     parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: login user
+    post:
+      tags:
+        - cw
+      description: login user
+      requestBody:
+        description: login user
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 
+      responses:
+        '201':
+          description: member login success
+        '404':
+        description: member login failed
+paths:
+  /logout/:
+     parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: logout user
+    get:
+      tags:
+        - cw
+      description: logout user
+      requestBody:
+        description: logout user
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 
+      responses:
+        '201':
+          description: member logout success
+        '404':
+        description: member logout failed
+
+paths:
+  /resetPassword/:token/:
+     parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: resetpassword user
+    patch:
+      tags:
+        - cw
+      description: resetpassword user
+      requestBody:
+        description: resetpassword user
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 
+      responses:
+        '201':
+          description: resetpassword  success
+        '404':
+        description: resetpassword  failed
+paths:
+  /forgotPassword/:
+     parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: forgotPassword user
+    post:
+      tags:
+        - cw
+      description: forgotPassword user
+      requestBody:
+        description: forgotPassword user
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 
+      responses:
+        '201':
+          description: forgotPassword  success
+        '404':
+        description: forgotPassword  failed
+
+        paths:
+  /dogs/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: Numeric id of the dogs
+    get:
+      tags:
+        - dogs
+      description: Get dogs by id.
+      responses:
+        '200':
+          description: View of dogs
+        '404':
+          description: dogs was not found in the DB.
+    post:
+      tags:
+        - dogs
+      description: Create a new dogs
+      requestBody:
+        description: All new dogs data.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./dogs.json#/definitions/dogs
+      responses:
+        '201':
+          description: dogs created
+
+    put:
+      tags:
+        - dogs
+      description: Update dogs by ID.
+      responses:
+        '200':
+          description: Update confirmation and link to record.
+        '404':
+          description: dogs was not found in the DB.
+    delete:
+      tags:
+        - dogs
+      description: Delete dogs by ID.
+    responses:
+      '200':
+        description: Delete confirmation.
+      '404':
+        description: dogs was not found in the DB.
+/photo:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: upload dog photo 
+    patch:
+      tags:
+        - dogs
+      description: pload dog photo
+      responses:
+        '200':
+          description: upload dog photo pass
+        '404':
+          description: upload dog photo fail
+/adoption:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: dog adoption 
+    post:
+      tags:
+        - dogs
+      description: pload dog photo
+      responses:
+        '200':
+          description: dog adoption pass
+        '404':
+          description: dog adoption fail
