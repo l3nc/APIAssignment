@@ -45,7 +45,7 @@ const cwSchema = new mongoose.Schema({
       message: 'Password is not the SAME!!!',
     },
   },
-  role: { type: String, enum: ['admin', 'member'] },
+  role: { type: String, enum: ['admin', 'member'], default: 'member' },
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
