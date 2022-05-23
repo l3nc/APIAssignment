@@ -1,3 +1,6 @@
+/**
+ * use nodemailer middleware to send reset email to user
+ */
 const nodemailer = require('nodemailer');
 
 const sendEmail = async (options) => {
@@ -11,7 +14,10 @@ const sendEmail = async (options) => {
     },
   });
 
-  //  Define the email options
+  /**
+  //  define the email options
+   * 
+   */
   const mailOptions = {
     from: 'Nelson <faijaisalui@gmail.com>',
     to: options.email,
@@ -20,7 +26,9 @@ const sendEmail = async (options) => {
     // html:
   };
 
-  //  Actually send the email
+  /**
+   *  //  actually send the email
+   */
   await transporter.sendMail(mailOptions);
 };
 

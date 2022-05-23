@@ -1,3 +1,6 @@
+/**
+ * import or define files or package
+ */
 const Cw = require('../models/cwModel');
 const catchAsync = require('./../utils/catchAsync');
 const jwt = require('jsonwebtoken');
@@ -9,30 +12,27 @@ const { cwd } = require('process');
 const sendEmail = require('./../utils/email');
 const crypto = require('crypto');
 
-// Creating JWT Token
+/** Creating JWT Token
+ *create sign in token
+ */
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
-
-// {
-//    email: req.body.email,
-//    password: req.body.password,
-//    passwordConfirm: req.body.passwordConfirm,
-// }
-
 const createSendToken = (cw, statusCode, res) => {
   const token = signToken(cw._id);
 
-  // Cookies handlling
+  /**  Cookies handlling
+   * process.env = local config env
+   * Cookies expeires time is defined
+   */
   const cookieOptions = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
   };
-
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
   res.cookie('jwt', token, cookieOptions);
   // Remove password from output
@@ -46,13 +46,16 @@ const createSendToken = (cw, statusCode, res) => {
     },
   });
 };
-// SIGNUP function
+/**Sign in Function */
 exports.signup = catchAsync(async (req, res, next) => {
   const newCw = await Cw.create(req.body);
   createSendToken(newCw, 201, res);
 });
 
-//LOGIN function
+/**Login Function
+ * if no email and password in, return error, vice versa
+ *appError to handle all error starts with "4"
+ */
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
   // check email and password exist
@@ -69,7 +72,7 @@ exports.login = catchAsync(async (req, res, next) => {
   // if everything ok, send token to client
   createSendToken(cw, 200, res);
 });
-
+/** Logout function */
 exports.logout = (req, res) => {
   res.cookie('jwt', 'loggedout', {
     expires: new Date(Date.now() + 10 * 1000),
@@ -78,7 +81,12 @@ exports.logout = (req, res) => {
   res.status(200).json({ status: 'success' });
 };
 
-// Protecting the route for unauthorize access
+/**
+ * Protecting the route for unauthorize access
+ *
+ * catchAsync help catch any error if happen
+ * @returns Bearer" token is used and use to verify the identity
+ * */
 exports.protect = catchAsync(async (req, res, next) => {
   // Getting token and check exist
   let token;
@@ -109,7 +117,11 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
 
-  //Check user changed password after token was issue.
+  /** Check user changed password after token was issue.
+   *
+   * @param iat = Toekn issue date
+   * @returns detect user changed PW, need to re log-in
+   */
   if (checkCw.changedPasswordAfter(decoded.iat)) {
     return next(
       new AppError(
@@ -123,7 +135,12 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
-// Applied access right / restrict to admin
+/**
+ *
+ * @param  {...any} role
+ * role = admin / member etc
+ * @returns permission denied if not login.
+ */
 exports.restrictTo = (...role) => {
   return (req, res, next) => {
     //role : admin
@@ -134,7 +151,11 @@ exports.restrictTo = (...role) => {
   };
 };
 
-//Forgot password function
+/**
+ * forgot password. then send the email to user email
+ * created reset password token, user need to reset with the token and 10 mins only
+ * otherwise, error, need to reset again
+ */
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   //get user base on posted email
   const cw = await Cw.findOne({ email: req.body.email });
@@ -171,7 +192,11 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   }
 });
 
-//Reset Password function
+/**
+ * reset password and resend the new password to server
+ *
+ */
+
 exports.resetPassword = catchAsync(async (req, res, next) => {
   //  Get user based on the token
   const hashedToken = crypto
@@ -194,12 +219,13 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   cw.passwordResetExpires = undefined;
   await cw.save();
 
-  // 3) Update changedPasswordAt property for the user
-  // 4) Log the user in, send JWT
+  // Log the user in, send JWT
   createSendToken(cw, 201, res);
 });
 
-// Member reset password instead of forgot password
+/**
+ * member update their own password
+ */
 exports.updatePassword = catchAsync(async (req, res, next) => {
   // Get user
   const cw = await Cw.findById(req.cw.id).select('+password');

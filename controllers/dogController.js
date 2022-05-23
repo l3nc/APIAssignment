@@ -1,27 +1,37 @@
-// The controller of DOG
+/**
+ * import or define files or package
+ */
 const Dog = require('../models/dogModel');
 const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
-// const multer = require('multer');
+const multer = require('multer');
 
-// // img
-// const multerStorage = multer.memoryStorage();
+/** upload single image function for dogPic
+ *using multer middleware and save to database
+ * (still debugging)
+ */
+const multerStorage = multer.memoryStorage();
 
-// const multerFilter = (req, file, cb) => {
-//   if (file.mimetype.startsWith('image')) {
-//     cb(null, true);
-//   } else {
-//     cb(new AppError('Not an image! Please upload only images.', 400), false);
-//   }
-// };
-// const upload = multer({
-//   storage: multerStorage,
-//   fileFilter: multerFilter,
-// });
-// exports.uploadDogPhoto = upload.single('photo');
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cb(new AppError('Not an image! Please upload only images.', 400), false);
+  }
+};
 
-// Adopt dogs functon
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+exports.uploadDogsImage = upload.single('dogPic');
+
+/** adpot dog function
+ * use to show wheter adpoted the dog
+ * (still developing)
+ */
 exports.adoptDog = catchAsync(async (req, res, next) => {
   const adoptDogs = await Dog.create(req.body);
   if (!adoptDogs.isAdopt) {
@@ -35,7 +45,7 @@ exports.adoptDog = catchAsync(async (req, res, next) => {
   });
 });
 
-// Get all dogs
+/**get all dogs function */
 exports.getAllDogs = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(Dog.find(), req.query)
     .filter()
@@ -53,7 +63,7 @@ exports.getAllDogs = catchAsync(async (req, res, next) => {
   });
 });
 
-// Get single dog
+/**get single dogs function */
 exports.getDog = catchAsync(async (req, res, next) => {
   const dog = await Dog.findById(req.params.id);
   if (!dog) {
@@ -67,7 +77,7 @@ exports.getDog = catchAsync(async (req, res, next) => {
   });
 });
 
-//Create dogs
+/** create all dogs function */
 exports.createDog = catchAsync(async (req, res, next) => {
   const newDog = await Dog.create(req.body);
   res.status(201).json({
@@ -78,7 +88,7 @@ exports.createDog = catchAsync(async (req, res, next) => {
   });
 });
 
-//Update dogs
+/** update all dogs function */
 exports.updateDog = catchAsync(async (req, res, next) => {
   const dog = await Dog.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -95,7 +105,7 @@ exports.updateDog = catchAsync(async (req, res, next) => {
   });
 });
 
-//Delete dog
+/**delete all dogs function */
 exports.deleteDog = catchAsync(async (req, res, next) => {
   const dog = await Dog.findByIdAndDelete(req.params.id, req.body);
   if (!dog) {
@@ -107,7 +117,7 @@ exports.deleteDog = catchAsync(async (req, res, next) => {
   });
 });
 
-//Get all dogs by sorting the name
+/** get all dogs by using sort function */
 exports.getDogStats = catchAsync(async (req, res, next) => {
   const stats = await Dog.aggregate([{ $sort: { name: 1 } }]);
   res.status(200).json({

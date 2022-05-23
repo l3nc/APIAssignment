@@ -1,3 +1,7 @@
+/**
+// create a class to output all error doe start with "4"
+ * 
+ */
 class AppError extends Error {
   constructor(message, statusCode) {
     super(message);

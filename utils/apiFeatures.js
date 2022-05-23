@@ -1,9 +1,18 @@
+/**
+ *
+ * use to provide api query : filter, sort ,pagnate, limit field features
+ */
+
 class APIFeatures {
   constructor(query, queryString) {
     this.query = query;
     this.queryString = queryString;
   }
 
+  /**
+   *   // filter with parameters function
+   * @returns
+   */
   filter() {
     const queryObj = { ...this.queryString };
     const excludeFields = ['page', 'sort', 'limit', 'fields'];
@@ -16,7 +25,11 @@ class APIFeatures {
 
     return this;
   }
-
+  /**
+  // sort the search result function
+   * 
+   * @returns 
+   */
   sort() {
     if (this.queryString.sorts) {
       const sortBy = this.queryString.sorts.split(',').join(' ');
@@ -26,7 +39,7 @@ class APIFeatures {
     }
     return this;
   }
-
+  // limit of fields function
   limitFields() {
     if (this.queryString.fields) {
       const fields = this.queryString.fields.split(',').join(' ');
@@ -36,7 +49,11 @@ class APIFeatures {
     }
     return this;
   }
-
+  /**
+  // pagnation limit function
+ * 
+ * @returns 
+ */
   paginate() {
     const page = this.queryString.page * 1 || 1;
     const limit = this.queryString.limit * 1 || 100;

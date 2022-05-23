@@ -1,4 +1,6 @@
-//Charity Worker Routes
+/**
+ * //Charity Worker Routes
+ */
 const express = require('express');
 const cwController = require('../controllers/cwController');
 const authController = require('../controllers/authController');
@@ -12,7 +14,9 @@ router.get('/logout', authController.logout);
 router.patch('/resetPassword/:token', authController.resetPassword);
 router.post('/forgotPassword', authController.forgotPassword);
 
-// Protect all routes after this middleware
+/**
+ * // Protect all routes after this middleware
+ */
 router.use(authController.protect);
 router.patch('/updateMyPassword', authController.updatePassword);
 

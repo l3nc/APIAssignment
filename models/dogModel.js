@@ -1,3 +1,6 @@
+/**
+ * dogs mongoose scheme
+ */
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
@@ -15,7 +18,6 @@ const dogSchema = new mongoose.Schema({
   },
   dogPic: {
     type: String,
-    default: 'default.jpg',
   },
   breeding: {
     type: String,
@@ -33,13 +35,17 @@ const dogSchema = new mongoose.Schema({
   comment: String,
 });
 
-//Docuemnt Middlewares: runs before .save() and .create()
+/**
+ * //Docuemnt Middlewares: runs before .save() and .create()
+ */
 
 dogSchema.pre('save', function (next) {
   this.slug = slugify(this.dogName, { lower: true });
   next();
 });
 
-// Export the schema
+/**
+ * // Export the schema
+ */
 const Dog = mongoose.model('Dog', dogSchema);
 module.exports = Dog;

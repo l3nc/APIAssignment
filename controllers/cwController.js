@@ -1,10 +1,12 @@
-// The controller of Charity worker
+/**
+ * import or define files or package
+ */
 const Cw = require('../models/cwModel');
 const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
-//Get all charity worker
+/** get all charity workers */
 exports.getAllCws = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(Cw.find(), req.query)
     .filter()
@@ -22,8 +24,7 @@ exports.getAllCws = catchAsync(async (req, res, next) => {
   });
 });
 
-//Get single charity worker
-
+/** get signle charity workers */
 exports.getCw = catchAsync(async (req, res, next) => {
   const cw = await Cw.findById(req.params.id);
   if (!cw) {
@@ -37,8 +38,7 @@ exports.getCw = catchAsync(async (req, res, next) => {
   });
 });
 
-//Create charity worker
-
+/** create all charity workers */
 exports.createCw = catchAsync(async (req, res, next) => {
   const newCw = await Cw.create(req.body);
 
@@ -50,8 +50,7 @@ exports.createCw = catchAsync(async (req, res, next) => {
   });
 });
 
-//Update charity worker
-
+/** update all charity workers */
 exports.updateCw = catchAsync(async (req, res, next) => {
   const cw = await Cw.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -68,7 +67,7 @@ exports.updateCw = catchAsync(async (req, res, next) => {
   });
 });
 
-// Delete charity worker
+/** delete all charity workers */
 exports.deleteCw = catchAsync(async (req, res, next) => {
   const cw = await Cw.findByIdAndDelete(req.params.id, req.body);
   if (!cw) {
@@ -80,7 +79,7 @@ exports.deleteCw = catchAsync(async (req, res, next) => {
   });
 });
 
-// Get charity worker by sorting the name
+/** get all charity workers by using sorting function */
 exports.getCwStats = catchAsync(async (req, res, next) => {
   const stats = await Cw.aggregate([{ $sort: { name: 1 } }]);
   res.status(200).json({

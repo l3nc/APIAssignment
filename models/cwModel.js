@@ -1,3 +1,6 @@
+/**
+ * charity worker mongoose scheme
+ */
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
@@ -56,12 +59,18 @@ const cwSchema = new mongoose.Schema({
   passwordResetExpires: Date,
 });
 
+/**
+ * use slugify to handle unicode symbol or space etc.
+ */
 cwSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
 });
 
-// only run if the password had modified
+/**
+ *  only run if the password had modified,
+ * hash the password
+ */
 cwSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   // hash 12
@@ -78,12 +87,21 @@ cwSchema.pre('save', function (next) {
   next();
 });
 
+/**
+ *  this refers to the current query
+ */
 cwSchema.pre(/^find/, function (next) {
-  // this points to the current query
   this.find({ active: { $ne: false } });
   next();
 });
 
+/**
+ *
+ * @param {*} candidatePassword
+ * @param {*} cwPassword
+ * @returns
+ * use bcrypt middleware to validate the user password
+ */
 cwSchema.methods.correctPassword = async function (
   candidatePassword,
   cwPassword
@@ -100,10 +118,12 @@ cwSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
     return JWTTimestamp < changedTimestamp;
   }
 
-  // False means NOT changed
+  // False means not changed
   return false;
 };
-
+/**
+ * build password reset token
+ */
 cwSchema.methods.createPasswordResetToken = function () {
   const resetToken = crypto.randomBytes(32).toString('hex');
 

@@ -1,10 +1,15 @@
+/**
+ * this is error handling controller, use to handle differ situation
+ */
 const AppError = require('./../utils/appError');
 
+/** handling mongodb obectid casting problem */
 const handleCastErrorDB = (err) => {
   const message = `Invalid ${err.path}: ${err.value}.`;
   return new AppError(message, 400);
 };
 
+/** handling mongodb duplicate field problem */
 const handleDuplicateFieldsDB = (err) => {
   const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
 
@@ -12,6 +17,7 @@ const handleDuplicateFieldsDB = (err) => {
   return new AppError(message, 400);
 };
 
+/** handling mongodb validation failed problem */
 const handleValidationErrorDB = (err) => {
   const errors = Object.values(err.errors).map((el) => el.message);
 
@@ -19,14 +25,17 @@ const handleValidationErrorDB = (err) => {
   return new AppError(message, 400);
 };
 
+/** handling JWT token error problem */
 const handleJWTError = () =>
   new AppError('Invalid token. Please log in again!', 401);
 
+/** handling JWT token expired problem */
 const handleJWTExpiredError = () =>
   new AppError('Your token has expired! Please log in again.', 401);
 
+/** development env error handlling */
 const sendErrorDev = (err, req, res) => {
-  // A) API
+  //  get API error handlling
   if (req.originalUrl.startsWith('/api')) {
     return res.status(err.statusCode).json({
       status: err.status,
@@ -35,53 +44,58 @@ const sendErrorDev = (err, req, res) => {
       stack: err.stack,
     });
   }
-
-  // B) RENDERED WEBSITE
+  //  rendered website error handdling
   console.error('ERROR !!!', err);
   return res.status(err.statusCode).render('error', {
-    title: 'Something went wrong!',
+    title: 'Something wrong!',
     msg: err.message,
   });
 };
 
+/** production env error handlling */
 const sendErrorProd = (err, req, res) => {
-  // A) API
+  //  get API error handlling
   if (req.originalUrl.startsWith('/api')) {
-    // A) Operational, trusted error: send message to client
+    // Operational, trusted error: send message to client
     if (err.isOperational) {
       return res.status(err.statusCode).json({
         status: err.status,
         message: err.message,
       });
     }
-    // B) Programming or other unknown error: don't leak error details
-    // 1) Log error
+    // programming or other unknown error: don't leak error details
+    //  log error
     console.error('ERROR !!!', err);
-    // 2) Send generic message
+    //  Send generic message
     return res.status(500).json({
       status: 'error',
-      message: 'Something went very wrong!',
+      message: 'Something wrong!',
     });
   }
 
-  // B) RENDERED WEBSITE
-  // A) Operational, trusted error: send message to client
+  //  rendered website
+  //  operational, trusted error: send message to client
   if (err.isOperational) {
     return res.status(err.statusCode).render('error', {
-      title: 'Something went wrong!',
+      title: 'Something  wrong!',
       msg: err.message,
     });
   }
-  // B) Programming or other unknown error: don't leak error details
-  // 1) Log error
+  // programming or other unknown error: don't leak error details
+  //  log error
   console.error('ERROR !!!', err);
-  // 2) Send generic message
+  // Send generic message
   return res.status(err.statusCode).render('error', {
     title: 'Something went wrong!',
     msg: 'Please try again later.',
   });
 };
 
+/**
+ *
+ *exports those error handllings
+ *
+ */
 module.exports = (err, req, res, next) => {
   // console.log(err.stack);
 
