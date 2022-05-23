@@ -3,13 +3,19 @@
 For VTC6003CEM WebAPI Assignment work by Nelson CHUNG
 
 1: This assignment (BACKEND API) is develop by node.js with express framework
+
 2: With RESTful api
+
 3: please in Terminal CD to this assignment root directory eg: 
+
 
 nelson@Nelsons-MacBook-Pro APIAssignment % npm start
 
 please install following dependencies : 
-  "dependencies": {
+
+  "dependencies":
+  {
+  
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
@@ -27,5 +33,5 @@ please install following dependencies :
     "superagent": "^7.1.3",
     "validator": "^13.7.0"
     
- 
+ }
  
