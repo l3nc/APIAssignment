@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: errorController.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: errorController.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * this is error handling controller, use to handle differ situation
+ */
+const AppError = require('./../utils/appError');
+
+/** handling mongodb obectid casting problem */
+const handleCastErrorDB = (err) => {
+  const message = `Invalid ${err.path}: ${err.value}.`;
+  return new AppError(message, 400);
+};
+
+/** handling mongodb duplicate field problem */
+const handleDuplicateFieldsDB = (err) => {
+  const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+
+  const message = `Duplicate field value: ${value}. Please use another value!`;
+  return new AppError(message, 400);
+};
+
+/** handling mongodb validation failed problem */
+const handleValidationErrorDB = (err) => {
+  const errors = Object.values(err.errors).map((el) => el.message);
+
+  const message = `Invalid input data. ${errors.join('. ')}`;
+  return new AppError(message, 400);
+};
+
+/** handling JWT token error problem */
+const handleJWTError = () =>
+  new AppError('Invalid token. Please log in again!', 401);
+
+/** handling JWT token expired problem */
+const handleJWTExpiredError = () =>
+  new AppError('Your token has expired! Please log in again.', 401);
+
+/** development env error handlling */
+const sendErrorDev = (err, req, res) => {
+  //  get API error handlling
+  if (req.originalUrl.startsWith('/api')) {
+    return res.status(err.statusCode).json({
+      status: err.status,
+      error: err,
+      message: err.message,
+      stack: err.stack,
+    });
+  }
+  //  rendered website error handdling
+  console.error('ERROR !!!', err);
+  return res.status(err.statusCode).render('error', {
+    title: 'Something wrong!',
+    msg: err.message,
+  });
+};
+
+/** production env error handlling */
+const sendErrorProd = (err, req, res) => {
+  //  get API error handlling
+  if (req.originalUrl.startsWith('/api')) {
+    // Operational, trusted error: send message to client
+    if (err.isOperational) {
+      return res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message,
+      });
+    }
+    // programming or other unknown error: don't leak error details
+    //  log error
+    console.error('ERROR !!!', err);
+    //  Send generic message
+    return res.status(500).json({
+      status: 'error',
+      message: 'Something wrong!',
+    });
+  }
+
+  //  rendered website
+  //  operational, trusted error: send message to client
+  if (err.isOperational) {
+    return res.status(err.statusCode).render('error', {
+      title: 'Something  wrong!',
+      msg: err.message,
+    });
+  }
+  // programming or other unknown error: don't leak error details
+  //  log error
+  console.error('ERROR !!!', err);
+  // Send generic message
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
+    msg: 'Please try again later.',
+  });
+};
+
+/**
+ *
+ *exports those error handllings
+ *
+ */
+module.exports = (err, req, res, next) => {
+  // console.log(err.stack);
+
+  err.statusCode = err.statusCode || 500;
+  err.status = err.status || 'error';
+
+  if (process.env.NODE_ENV === 'development') {
+    sendErrorDev(err, req, res);
+  } else if (process.env.NODE_ENV === 'production') {
+    let error = { ...err };
+    error.message = err.message;
+
+    if (error.name === 'CastError') error = handleCastErrorDB(error);
+    if (error.code === 11000) error = handleDuplicateFieldsDB(error);
+    if (error.name === 'ValidationError')
+      error = handleValidationErrorDB(error);
+    if (error.name === 'JsonWebTokenError') error = handleJWTError();
+    if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
+
+    sendErrorProd(error, req, res);
+  }
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#adoptDog">adoptDog</a></li><li><a href="global.html#AppError">AppError</a></li><li><a href="global.html#createCw">createCw</a></li><li><a href="global.html#createDog">createDog</a></li><li><a href="global.html#Cw">Cw</a></li><li><a href="global.html#deleteCw">deleteCw</a></li><li><a href="global.html#deleteDog">deleteDog</a></li><li><a href="global.html#Dog">Dog</a></li><li><a href="global.html#forgotPassword">forgotPassword</a></li><li><a href="global.html#getAllCws">getAllCws</a></li><li><a href="global.html#getAllDogs">getAllDogs</a></li><li><a href="global.html#getCw">getCw</a></li><li><a href="global.html#getCwStats">getCwStats</a></li><li><a href="global.html#getDog">getDog</a></li><li><a href="global.html#getDogStats">getDogStats</a></li><li><a href="global.html#handleCastErrorDB">handleCastErrorDB</a></li><li><a href="global.html#handleDuplicateFieldsDB">handleDuplicateFieldsDB</a></li><li><a href="global.html#handleJWTError">handleJWTError</a></li><li><a href="global.html#handleJWTExpiredError">handleJWTExpiredError</a></li><li><a href="global.html#handleValidationErrorDB">handleValidationErrorDB</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#multerStorage">multerStorage</a></li><li><a href="global.html#protect">protect</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#restrictTo">restrictTo</a></li><li><a href="global.html#sendErrorDev">sendErrorDev</a></li><li><a href="global.html#sendErrorProd">sendErrorProd</a></li><li><a href="global.html#signToken">signToken</a></li><li><a href="global.html#signup">signup</a></li><li><a href="global.html#updateCw">updateCw</a></li><li><a href="global.html#updateDog">updateDog</a></li><li><a href="global.html#updatePassword">updatePassword</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Mon May 23 2022 18:48:59 GMT+0800 (Hong Kong Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
