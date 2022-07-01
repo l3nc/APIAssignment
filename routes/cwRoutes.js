@@ -18,7 +18,7 @@ router.post('/forgotPassword', authController.forgotPassword);
  * // Protect all routes after this middleware
  */
 router.use(authController.protect);
-router.patch('/updateMyPassword', authController.updatePassword);
+router.patch('/updateMyPassword/:id', authController.updatePassword);
 
 router.use(authController.restrictTo('admin'));
 

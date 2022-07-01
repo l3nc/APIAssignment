@@ -11,7 +11,7 @@ const dogRouter = require('./routes/dogRoutes');
 const cors = require('cors');
 
 /**
- * // define the current either dev or production env.
+ * // define the curent either dev or production env.
  */
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
