@@ -14,8 +14,8 @@ router.route('/').get(dogController.getAllDogs);
  * // Protect all routes after this middleware
  */
 
-router.use(authController.protect);
-router.use(authController.restrictTo('admin'));
+// router.use(authController.protect);
+// router.use(authController.restrictTo('admin'));
 
 router.patch('/photo', dogController.uploadDogsImage);
 router.route('/:adpotion').post(dogController.adoptDog);

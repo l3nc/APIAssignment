@@ -20,14 +20,14 @@ process.on('uncaughtException', (err) => {
 // Connect to mongoDB server
  */
 dotenv.config({ path: './config.env' });
-const uri =
+const url =
   'mongodb+srv://nelson:kyneMIuqlsfNP6pq@cluster0.l7nav.mongodb.net/assignments?retryWrites=true&w=majority';
 
 /**
  * //Connect
  */
 mongoose
-  .connect(uri, {
+  .connect(url, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
@@ -39,7 +39,8 @@ mongoose
 
 const app = require('./app');
 
-const port = 3001;
+//const port = 3001;
+const port = process.env.PORT;
 app.listen(port, () => {
   console.log(`Dog App is running on port ${port}🎉🎊🥂🎉🎊🥂🎉🎊🥂`);
 });
